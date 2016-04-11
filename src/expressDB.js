@@ -83,24 +83,18 @@ function getRandomToken() {
 function isLoggedIn(request, callback) {
   var isValid = false;
   var token = request.cookies['sessionid'];
-  console.log('token:' + token);
   collection.findOne( { token: token }, function(error, response) {
     if (response && response.token) {
 
       var expirationTime = getCurrentExpirationTime();
       var sessionTime = response.expiration;
       var currentTime = (new Date()).getTime();
-      console.log('x:' + (new Date(currentTime)).toString());
-      console.log('y:' + (new Date(sessionTime)).toString());
-      console.log('x:' + expirationTime + '>' + sessionTime);
       if (currentTime < sessionTime) {
         isValid = true;
         collection.update({ '_id': objectId(response._id) }, {$set: {expiration: expirationTime}});
       }
 
     }
-
-    console.log('response:' + JSON.stringify(response));
 
     callback(isValid);
 

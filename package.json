@@ -4,8 +4,11 @@
   "description":"Node to Mongo Sample App",
   "private": true,
   "dependencies": {
-    "mongodb":"2.1.16",
-    "bluebird":"3.3.4"
+    "bluebird":"3.3.4",
+    "body-parser":"1.15.0",
+    "cookie-parser":"1.4.1",
+    "express":"4.13.4",
+    "mongodb":"2.1.16"
   },
   "devDependencies": {
   },

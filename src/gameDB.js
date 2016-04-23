@@ -51,7 +51,6 @@ function Engine(game, rules) {
     if (game.deck.length <= 0) {
       this.shuffle();
     };
-
     var result = game.deck[game.deck.length - 1];
     game.deck.pop();
 
@@ -59,14 +58,26 @@ function Engine(game, rules) {
   };
 
   this.shuffle = function() {
+
+    // Build the deck from the rules.
+    var rulesDeck = [];
+    rules.deck.forEach(function(cardType) {
+      var amount = (cardType.amount) ? cardType.amount : 1;
+      for (var x = 0; x < amount; x++) {
+        rulesDeck.push(cardType.card);
+      }
+    });
+
+    // Final suffled deck.
     var shuffleDeck = [];
-    var rulesDeck = rules.deck;
     while(rulesDeck.length > 0) {
       var randomCard = Math.floor(Math.random() * (rulesDeck.length));
       shuffleDeck.push(rulesDeck[randomCard]);
       rulesDeck.splice(randomCard, 1);
     }
+
     game.deck = shuffleDeck;
+
   };
 
   this.player = new function() {
@@ -132,4 +143,11 @@ app.get('/', function(request, response) {
   });
 
 
+});
+
+app.get('/view', function(request, response) {
+  var id = request.query.id;
+  collection.findOne({ '_id': objectId(id) }, function(error, gameObj) {
+    response.send(JSON.stringify(gameObj));
+  });
 });

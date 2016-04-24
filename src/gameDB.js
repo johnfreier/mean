@@ -4,9 +4,10 @@ var fs = require('fs');
 
 var status = ['IN_PROGRESS', 'GAME_OVER'];
 
-function Player(name) {
+function Player(name, properties) {
   this.name = name;
   this.location = 0;
+  this.properties = properties;
 };
 
 function Game() {
@@ -81,8 +82,8 @@ function Engine(game, rules) {
   };
 
   this.player = new function() {
-    this.add = function(name) {
-      game.players.push(new Player(name));
+    this.add = function(name, properties) {
+      game.players.push(new Player(name, properties));
     },
     this.location = function(position) {
       if (position) game.players[game.turn].location = position;
@@ -121,10 +122,7 @@ app.get('/', function(request, response) {
     var src = fs.readFileSync('src/game.js', 'utf8');
     eval('var rules = ' + src);
 
-    var game = new Game();
-    if (gameObj != null) game = gameObj;
-
-    //console.log('game:' + JSON.stringify(game));
+    var game = (gameObj) ? gameObj : new Game();
 
     var engine = new Engine(game, rules);
 

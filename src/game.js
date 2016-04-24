@@ -128,9 +128,12 @@
       { position: 85, description: 'licorice blue' },
       { position: 116, description: 'licorice  yellow' }
   ],
+  player: {
+    isSticky: false
+  },
   actionNew: function(engine) {
-    engine.player.add('player1');
-    engine.player.add('player2');
+    engine.player.add('player1', this.player);
+    engine.player.add('player2', this.player);
   },
   actionTurn: function(engine) {
 
@@ -146,17 +149,11 @@
     engine.history(engine.player.current().name + ' drew a ' + card.color);
 
     // Handle sticky spaces
-    this.bonus.forEach(function(sticky){
-      if (!sticky.move) {
-        if (position == sticky.position) {
-          if (color != self.board[sticky.position]) {
-            isSticky = sticky;
-            engine.history(engine.player.current().name + ' is still stuck on ' + isSticky.description);
-          }
-        }
-      }
-    });
-    if (isSticky) return;
+    if (engine.player.current().properties.isSticky) {
+      engine.history(engine.player.current().name + ' is stuck and loses a turn.');
+      engine.player.current().properties.isSticky = false;
+      return;
+    }
 
     // Handle Special Cards
     if (card.special) position = 0;
@@ -184,6 +181,7 @@
       if (!sticky.move) {
         if (position == sticky.position) {
           engine.history(engine.player.current().name + ' is stuck on ' + sticky.description);
+          engine.player.current().properties.isSticky = true;
         }
       }
     });
